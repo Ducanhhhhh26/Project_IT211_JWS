@@ -28,14 +28,14 @@ public class StudentController {
         return ResponseEntity.ok(new ApiResponseDTO<>(200, "Registered to course successfully", null));
     }
 
-    @PostMapping("/assignments/{assignmentId}/submit")
+    @PostMapping(value = "/assignments/{assignmentId}/submit", consumes = org.springframework.http.MediaType.MULTIPART_FORM_DATA_VALUE)
     public ResponseEntity<ApiResponseDTO<SubmissionDTO>> submitAssignment(
             @PathVariable Long assignmentId,
-            @RequestParam String reportUrl) {
+            @RequestParam("file") org.springframework.web.multipart.MultipartFile file) {
         Authentication auth = SecurityContextHolder.getContext().getAuthentication();
         String username = auth.getName();
         
-        SubmissionDTO submission = submissionService.submitAssignment(assignmentId, username, reportUrl);
+        SubmissionDTO submission = submissionService.submitAssignment(assignmentId, username, file);
         return ResponseEntity.ok(new ApiResponseDTO<>(200, "Assignment submitted successfully", submission));
     }
 }

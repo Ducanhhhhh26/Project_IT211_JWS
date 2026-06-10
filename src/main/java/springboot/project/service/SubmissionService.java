@@ -19,12 +19,20 @@ public class SubmissionService {
     private final AssignmentRepository assignmentRepository;
     private final UserRepository userRepository;
     private final UserService userService;
+    private final CloudinaryService cloudinaryService;
 
-    public SubmissionDTO submitAssignment(Long assignmentId, String username, String reportUrl) {
+    public SubmissionDTO submitAssignment(Long assignmentId, String username, org.springframework.web.multipart.MultipartFile file) {
         Assignment assignment = assignmentRepository.findById(assignmentId)
                 .orElseThrow(() -> new RuntimeException("Assignment not found"));
         User student = userRepository.findByUsername(username)
                 .orElseThrow(() -> new RuntimeException("Student not found"));
+
+        String reportUrl;
+        try {
+            reportUrl = cloudinaryService.uploadFile(file);
+        } catch (java.io.IOException e) {
+            throw new RuntimeException("Failed to upload file to Cloudinary", e);
+        }
 
         Submission submission = new Submission();
         submission.setAssignment(assignment);
