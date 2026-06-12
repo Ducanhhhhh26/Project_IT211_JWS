@@ -11,3 +11,4 @@ public class GradeRequestDTO {
     private Double score;
     private String feedback;
 }
+    

@@ -12,7 +12,7 @@ import springboot.project.security.JwtUtil;
 import springboot.project.service.CourseService;
 import springboot.project.service.SubmissionService;
 import org.springframework.security.core.userdetails.UserDetailsService;
-import springboot.project.repository.TokenBlacklistRepository;
+import org.springframework.data.redis.core.StringRedisTemplate;
 
 import static org.mockito.ArgumentMatchers.eq;
 import static org.mockito.Mockito.doNothing;
@@ -40,7 +40,7 @@ class StudentControllerTest {
     private UserDetailsService userDetailsService;
 
     @MockitoBean
-    private TokenBlacklistRepository tokenBlacklistRepository;
+    private StringRedisTemplate stringRedisTemplate;
 
     @Test
     @WithMockUser(username = "student1", roles = "STUDENT")

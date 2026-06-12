@@ -13,11 +13,10 @@ import springboot.project.dto.LoginResponseDTO;
 import springboot.project.dto.RegisterRequestDTO;
 import springboot.project.dto.TokenRefreshRequestDTO;
 import springboot.project.entity.RefreshToken;
-import springboot.project.entity.TokenBlacklist;
 import springboot.project.entity.User;
 import springboot.project.repository.RefreshTokenRepository;
-import springboot.project.repository.TokenBlacklistRepository;
 import springboot.project.repository.UserRepository;
+import org.springframework.data.redis.core.StringRedisTemplate;
 import springboot.project.security.JwtUtil;
 
 import java.util.Date;
@@ -32,7 +31,7 @@ public class AuthService {
     private final JwtUtil jwtUtil;
     private final UserDetailsService userDetailsService;
     private final RefreshTokenRepository refreshTokenRepository;
-    private final TokenBlacklistRepository tokenBlacklistRepository;
+    private final StringRedisTemplate stringRedisTemplate;
     
     public void registerStudent(RegisterRequestDTO requestDTO) {
         if (userRepository.existsByUsername(requestDTO.getUsername())) {
@@ -86,10 +85,10 @@ public class AuthService {
         if (authHeader != null && authHeader.startsWith("Bearer ")) {
             String jwt = authHeader.substring(7);
             Date expirationDate = jwtUtil.extractExpiration(jwt);
-            TokenBlacklist blacklistedToken = new TokenBlacklist();
-            blacklistedToken.setToken(jwt);
-            blacklistedToken.setExpirationTime(expirationDate);
-            tokenBlacklistRepository.save(blacklistedToken);
+            long remainingTime = expirationDate.getTime() - System.currentTimeMillis();
+            if (remainingTime > 0) {
+                stringRedisTemplate.opsForValue().set("blacklist:" + jwt, "revoked", remainingTime, java.util.concurrent.TimeUnit.MILLISECONDS);
+            }
         }
     }
 

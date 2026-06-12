@@ -16,7 +16,7 @@ import springboot.project.security.JwtUtil;
 import springboot.project.service.CourseService;
 import springboot.project.service.UserService;
 import org.springframework.security.core.userdetails.UserDetailsService;
-import springboot.project.repository.TokenBlacklistRepository;
+import org.springframework.data.redis.core.StringRedisTemplate;
 
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.ArgumentMatchers.eq;
@@ -46,7 +46,7 @@ class AdminControllerTest {
     private UserDetailsService userDetailsService;
 
     @MockitoBean
-    private TokenBlacklistRepository tokenBlacklistRepository;
+    private StringRedisTemplate stringRedisTemplate;
 
     @Autowired
     private ObjectMapper objectMapper;

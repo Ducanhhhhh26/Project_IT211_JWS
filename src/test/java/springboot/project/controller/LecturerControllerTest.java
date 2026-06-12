@@ -16,7 +16,7 @@ import springboot.project.service.AssignmentService;
 import springboot.project.service.LectureMaterialService;
 import springboot.project.service.SubmissionService;
 import org.springframework.security.core.userdetails.UserDetailsService;
-import springboot.project.repository.TokenBlacklistRepository;
+import org.springframework.data.redis.core.StringRedisTemplate;
 
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.ArgumentMatchers.eq;
@@ -48,7 +48,7 @@ class LecturerControllerTest {
     private UserDetailsService userDetailsService;
 
     @MockitoBean
-    private TokenBlacklistRepository tokenBlacklistRepository;
+    private StringRedisTemplate stringRedisTemplate;
 
     @Autowired
     private ObjectMapper objectMapper;
